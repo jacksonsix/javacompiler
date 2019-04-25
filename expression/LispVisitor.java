@@ -59,11 +59,24 @@ public interface LispVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompound_expr(LispParser.Compound_exprContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code set_expr}
+	 * labeled alternative in {@link LispParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSet_expr(LispParser.Set_exprContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LispParser#define}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitDefine(LispParser.DefineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LispParser#setexpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetexpr(LispParser.SetexprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LispParser#ifexpr}.
 	 * @param ctx the parse tree

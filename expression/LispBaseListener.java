@@ -100,6 +100,18 @@ public class LispBaseListener implements LispListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSet_expr(LispParser.Set_exprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSet_expr(LispParser.Set_exprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDefine(LispParser.DefineContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -107,6 +119,18 @@ public class LispBaseListener implements LispListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDefine(LispParser.DefineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSetexpr(LispParser.SetexprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSetexpr(LispParser.SetexprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

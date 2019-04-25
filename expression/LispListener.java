@@ -90,6 +90,18 @@ public interface LispListener extends ParseTreeListener {
 	 */
 	void exitCompound_expr(LispParser.Compound_exprContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code set_expr}
+	 * labeled alternative in {@link LispParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSet_expr(LispParser.Set_exprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code set_expr}
+	 * labeled alternative in {@link LispParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSet_expr(LispParser.Set_exprContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LispParser#define}.
 	 * @param ctx the parse tree
 	 */
@@ -99,6 +111,16 @@ public interface LispListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDefine(LispParser.DefineContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LispParser#setexpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSetexpr(LispParser.SetexprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LispParser#setexpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSetexpr(LispParser.SetexprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LispParser#ifexpr}.
 	 * @param ctx the parse tree

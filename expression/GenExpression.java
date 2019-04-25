@@ -23,13 +23,19 @@ import expression.LispParser.OpContext;
 import expression.LispParser.Self_exprContext;
 import expression.LispParser.Self_idContext;
 import expression.LispParser.Self_intContext;
+import expression.LispParser.Set_exprContext;
+import expression.LispParser.SetexprContext;
 import machine.*;
 
 public class GenExpression<IIExpression> extends LispBaseVisitor<IIExpression>{
 
 	public IIExpression visitDefine_expr(Define_exprContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitDefine_expr(ctx);
+		DefineExpression dexp = new DefineExpression();
+		String name = ctx.define().getChild(2).getText();
+		machine.IIExpression val = (machine.IIExpression) visit(ctx.define().getChild(3));
+		dexp.setName(name);
+		dexp.setVal(val);
+		return  (IIExpression) dexp;
 	}
 
 	@Override
@@ -44,6 +50,23 @@ public class GenExpression<IIExpression> extends LispBaseVisitor<IIExpression>{
 		machine.IIExpression aexp = (machine.IIExpression) visit(ctx.ifexpr().getChild(5));
 		return  (IIExpression)new IfExpression(pexp,rexp,aexp);
 		//return super.visitIf_expr(ctx);
+	}
+
+	@Override
+	public IIExpression visitSet_expr(Set_exprContext ctx) {
+		SetExpression dexp = new SetExpression();
+		String name = ctx.setexpr().getChild(0).getText();
+		machine.IIExpression val = (machine.IIExpression) visit(ctx.setexpr().getChild(0));
+		dexp.setName(name);
+		dexp.setVal(val);
+		return  (IIExpression) dexp;
+		
+	}
+
+	@Override
+	public IIExpression visitSetexpr(SetexprContext ctx) {
+		// TODO Auto-generated method stub
+		return super.visitSetexpr(ctx);
 	}
 
 	@Override

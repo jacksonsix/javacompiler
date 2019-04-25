@@ -44,6 +44,7 @@ public class TryExpr {
 			//ParseTreeWalker walker = new ParseTreeWalker();
 			//walker.walk(new ShortConvert(), tree);
 			Object o =Try.interpret(exp);
+			System.out.println("next expression");
 		}
 		
 

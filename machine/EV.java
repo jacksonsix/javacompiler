@@ -21,6 +21,12 @@ public class EV {
 			return ((SelfExpression)exp).getValue();
 		case "VaribleExpression":
 			return ((VaribleExpression)exp).getValue(env);
+		case "DefineExpression":
+			EvalDefineExpression((DefineExpression)exp,env);
+			return "ok";
+		case "SetExpression":
+			EvalSetExpression((SetExpression)exp,env);
+			return "ok";
 		case "IfExpression":
 			log("If");
 			return EvalIf((IIExpression)exp, env);	
@@ -50,6 +56,20 @@ public class EV {
 	}
 	
 	
+	private void EvalSetExpression(SetExpression exp, Env env) throws Exception {
+		String name = exp.getName();
+		IIExpression val = exp.getVal(); 
+		Object o =  eval(val,env);
+		env.setVarible(name, o);
+		
+	}
+	private void EvalDefineExpression(DefineExpression exp, Env env) throws Exception {
+		// TODO Auto-generated method stub
+		String name = exp.getName();
+		IIExpression val = exp.getVal(); 
+		Object o =  eval(val,env);
+		env.defineVarible(name, o);
+	}
 	private Object EvalSelf(IIExpression exp, Env env){
 		log("self value");
 		
