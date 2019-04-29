@@ -15,11 +15,17 @@ import expression.LispParser.CompoundContext;
 import expression.LispParser.Compound_exprContext;
 import expression.LispParser.DefineContext;
 import expression.LispParser.Define_exprContext;
+import expression.LispParser.FileContext;
+import expression.LispParser.FormalParaContext;
+import expression.LispParser.FormalParasContext;
 import expression.LispParser.If_exprContext;
 import expression.LispParser.IfexprContext;
 import expression.LispParser.LambdaContext;
+import expression.LispParser.Lambda_compContext;
 import expression.LispParser.Lambda_exprContext;
 import expression.LispParser.OpContext;
+import expression.LispParser.Proc_name_compContext;
+import expression.LispParser.Proc_num_compContext;
 import expression.LispParser.Self_exprContext;
 import expression.LispParser.Self_idContext;
 import expression.LispParser.Self_intContext;
@@ -55,8 +61,8 @@ public class GenExpression<IIExpression> extends LispBaseVisitor<IIExpression>{
 	@Override
 	public IIExpression visitSet_expr(Set_exprContext ctx) {
 		SetExpression dexp = new SetExpression();
-		String name = ctx.setexpr().getChild(0).getText();
-		machine.IIExpression val = (machine.IIExpression) visit(ctx.setexpr().getChild(0));
+		String name = ctx.setexpr().getChild(2).getText();
+		machine.IIExpression val = (machine.IIExpression) visit(ctx.setexpr().getChild(3));
 		dexp.setName(name);
 		dexp.setVal(val);
 		return  (IIExpression) dexp;
@@ -71,13 +77,19 @@ public class GenExpression<IIExpression> extends LispBaseVisitor<IIExpression>{
 
 	@Override
 	public IIExpression visitLambda_expr(Lambda_exprContext ctx) {
-		machine.IIExpression parafrom = (machine.IIExpression) visit(ctx.lambda().getChild(0));
+		//machine.IIExpression parafrom = (machine.IIExpression) visit(ctx.lambda().getChild(3));
 		List<String> para = new LinkedList<String>();
+		ParseTree pas = ctx.lambda().getChild(3);
+		for(int i=0;i< pas.getChildCount();i++) {
+			para.add(pas.getChild(i).getText());
+		}
 		List<machine.IIExpression> body = new LinkedList<machine.IIExpression>();
 		//(IIExpression) visit(ctx.lambda().getChild(0));
-		int size = ctx.lambda().getChildCount();
-		for(int i=0;i<size;i++) {
-			body.add((machine.IIExpression) visit(ctx.lambda().getChild(i)));
+		
+		for(int i=0;i<ctx.lambda().getChildCount()-6;i++) {
+			ParseTree node = ctx.lambda().getChild(5+i);
+			machine.IIExpression bo = (machine.IIExpression) visit(node);
+			body.add(bo);
 		}
 		IIExpression result =  (IIExpression) new LambdaExpression(para,body);
 		return result;
@@ -87,11 +99,12 @@ public class GenExpression<IIExpression> extends LispBaseVisitor<IIExpression>{
 	public IIExpression visitBegin_expr(Begin_exprContext ctx) {
 		
 		List<machine.IIExpression> seq = new LinkedList<machine.IIExpression>(); //
-		int size = ctx.begin().getChildCount();
-		for(int i=0;i< size;i++) {
-			seq.add((machine.IIExpression) visit(ctx.begin().getChild(i)));
+		
+		ParseTree node = ctx.begin().getChild(2);
+		for(int i=0;i< node.getChildCount();i++) {
+			seq.add((machine.IIExpression) visit(node.getChild(i)));
 		}
-		IIExpression result = (IIExpression) new SequenceExpression(seq);
+		IIExpression result = (IIExpression) new BeginExpression(seq);
 		
 		return result;
 	}
@@ -105,10 +118,11 @@ public class GenExpression<IIExpression> extends LispBaseVisitor<IIExpression>{
 	@Override
 	public IIExpression visitCompound_expr(Compound_exprContext ctx) {
 		// TODO Auto-generated method stub
-		machine.IIExpression op =  (machine.IIExpression) visit(ctx.compound().getChild(0));
+		machine.IIExpression op =  (machine.IIExpression) visit(ctx.compound().getChild(1));
 		List<machine.IIExpression>  plist = new LinkedList<machine.IIExpression>();//
-		for(int i=0;i< ctx.compound().getChildCount();i++) {
-			plist.add((machine.IIExpression) visit(ctx.compound().getChild(1)));
+		ParseTree node = ctx.compound().getChild(2);
+		for(int i=0;i< node.getChildCount();i++) {
+			plist.add((machine.IIExpression) visit(node.getChild(i)));
 		}
 		IIExpression result = (IIExpression) new CompoundExpression(op,plist);
 		return result;
@@ -117,6 +131,7 @@ public class GenExpression<IIExpression> extends LispBaseVisitor<IIExpression>{
 	@Override
 	public IIExpression visitDefine(DefineContext ctx) {
 		// TODO Auto-generated method stub
+		System.out.println("visitDefine");
 		return super.visitDefine(ctx);
 	}
 
@@ -141,7 +156,8 @@ public class GenExpression<IIExpression> extends LispBaseVisitor<IIExpression>{
 	@Override
 	public IIExpression visitSelf_id(Self_idContext ctx) {
 		// TODO Auto-generated method stub
-		return super.visitSelf_id(ctx);
+		SymbolExpression s = new SymbolExpression(ctx.getChild(0).getText());
+		return (IIExpression) s;
 	}
 
 	@Override
@@ -154,19 +170,82 @@ public class GenExpression<IIExpression> extends LispBaseVisitor<IIExpression>{
 	@Override
 	public IIExpression visitCompound(CompoundContext ctx) {
 		// TODO Auto-generated method stub
-		return super.visitCompound(ctx);
+		
+		machine.IIExpression op =  (machine.IIExpression) visit(ctx.getChild(1));
+		List<machine.IIExpression>  plist = new LinkedList<machine.IIExpression>();//
+		ParseTree node = ctx.getChild(2);
+		for(int i=0;i< node.getChildCount();i++) {
+			plist.add((machine.IIExpression) visit(node.getChild(i)));
+		}
+		IIExpression result = (IIExpression) new CompoundExpression(op,plist);
+		return result;
+		
+	}
+
+
+
+	@Override
+	public IIExpression visitFile(FileContext ctx) {
+		// TODO Auto-generated method stub
+		return super.visitFile(ctx);
 	}
 
 	@Override
-	public IIExpression visitOp(OpContext ctx) {
+	public IIExpression visitLambda_comp(Lambda_compContext ctx) {
 		// TODO Auto-generated method stub
-		return super.visitOp(ctx);
+		return super.visitLambda_comp(ctx);
+	}
+
+	@Override
+	public IIExpression visitProc_name_comp(Proc_name_compContext ctx) {
+		// TODO Auto-generated method stub
+
+		String name = ctx.getChild(0).getText();
+		SymbolExpression v = new SymbolExpression(name);
+		return (IIExpression) v;
+	}
+
+	@Override
+	public IIExpression visitProc_num_comp(Proc_num_compContext ctx) {
+		// TODO Auto-generated method stub
+		String name = ctx.getChild(0).getText();
+		SymbolExpression v = new SymbolExpression(name);
+		return (IIExpression)v;
+	}
+
+	@Override
+	public IIExpression visitFormalParas(FormalParasContext ctx) {
+		// TODO Auto-generated method stub
+		SequenceExpression seq = new SequenceExpression();
+		int size = ctx.getChildCount();
+		List<IIExpression> s = new LinkedList<IIExpression>();
+		
+		for(int i=0;i<size;i++) {
+			IIExpression  sef = visit(ctx.getChild(i));
+			s.add((IIExpression) sef);
+		}
+		return (IIExpression) seq;
+	}
+
+	@Override
+	public IIExpression visitFormalPara(FormalParaContext ctx) {
+		// TODO Auto-generated method stub
+		return (IIExpression) new SelfExpression(ctx.getChild(0).getText());
 	}
 
 	@Override
 	public IIExpression visitArgs(ArgsContext ctx) {
 		// TODO Auto-generated method stub
-		return super.visitArgs(ctx);
+		
+		SequenceExpression seq = new SequenceExpression();
+		int size = ctx.getChildCount();
+		List<IIExpression> s = new LinkedList<IIExpression>();
+		
+		for(int i=0;i<size;i++) {
+			IIExpression  sef = (IIExpression) visit(ctx.getChild(i));
+			s.add(sef);
+		}
+		return (IIExpression) seq;
 	}
 
 	@Override
