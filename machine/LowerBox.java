@@ -26,11 +26,28 @@ public class LowerBox {
 		Method method3 = LowerBox.class.getMethod("cons", parameterTypes3);
 		PrimitiveProc prim3 = new PrimitiveProc("cons",method3);
 		prims.add(prim3);
+		
+		addOther(prims);
 		return prims;
 		
 		
 	}
 	
+	private static void addOther(List<PrimitiveProc> prims2) throws NoSuchMethodException, SecurityException {
+		// TODO Auto-generated method stub
+		Class[] parameterTypes = new Class[2];
+		parameterTypes[0] = Integer.class;
+		parameterTypes[1] = Integer.class;
+		Method madd = LowerBox.class.getMethod("add", parameterTypes);
+		PrimitiveProc proc = new PrimitiveProc("+",madd);
+		prims.add(proc);
+
+		Method subadd = LowerBox.class.getMethod("subtract", parameterTypes);
+		PrimitiveProc proc1 = new PrimitiveProc("-",subadd);
+		prims.add(proc1);
+		
+	}
+
 	public static  Object car(LispObject o){
 		return o.getCar();
 	}
@@ -40,6 +57,12 @@ public class LowerBox {
 	}
 	public static LispObject cons(Object f,Object s){
 		return new LispObject(f,s);
+	}
+	public static int add(Integer a , Integer b) {
+		return a+b;
+	}
+	public static int subtract(Integer a ,Integer b) {
+		return a-b;
 	}
 }
 
