@@ -1,0 +1,60 @@
+<html>
+<head>
+
+</head>
+<body>
+
+ Data: <input id="inputtextbox" type="text" name="fname"><br>
+ <input type="submit" value="Write" onclick="clickHandler(event)">
+ <div id="p">
+ <svg width="100" height="100">
+  <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
+</svg>
+<script src="viz.js"></script>
+<script src="full.render.js"></script>
+<script>
+  var viz = new Viz();
+
+  
+  function draw(){
+     var  uinput = document.getElementById('inputtextbox').value;
+	  var  data = 'graph  { ' + uinput +' }';
+	  viz.renderSVGElement(data)
+	  .then(function(element) {
+	    var frame = document.getElementById('p');
+		frame.removeChild(frame.childNodes[0]); 
+		frame.appendChild(element);
+	  })
+	  .catch(error => {
+		// Create a new Viz instance (@see Caveats page for more info)
+		viz = new Viz();
+
+		// Possibly display the error
+		console.error(error);
+	  });
+  }
+  function clickHandler(e){
+  console.log('clicked');
+  draw();
+  }
+  
+	var svg = document.querySelector('svg');
+	var pt  = svg.createSVGPoint();
+	function screenCoordsForRect(rect){
+	  var corners = {};
+	  var matrix  = rect.getScreenCTM();
+	  pt.x = rect.x.animVal.value;
+	  pt.y = rect.y.animVal.value;
+	  corners.nw = pt.matrixTransform(matrix);
+	  pt.x += rect.width.animVal.value;
+	  corners.ne = pt.matrixTransform(matrix);
+	  pt.y += rect.height.animVal.value;
+	  corners.se = pt.matrixTransform(matrix);
+	  pt.x -= rect.width.animVal.value;
+	  corners.sw = pt.matrixTransform(matrix);
+	  return corners;
+	}
+</script>
+
+</body>
+</html>
